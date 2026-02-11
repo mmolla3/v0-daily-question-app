@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     CHECK (category IN ('self-reflection', 'mental-health', 'career', 'emotional-awareness', 'mix')),
   questions_per_day INTEGER NOT NULL DEFAULT 2
     CHECK (questions_per_day BETWEEN 1 AND 3),
+  weekly_chosen_at DATE DEFAULT NULL,
   current_streak INTEGER NOT NULL DEFAULT 0,
   longest_streak INTEGER NOT NULL DEFAULT 0,
   total_answered INTEGER NOT NULL DEFAULT 0,

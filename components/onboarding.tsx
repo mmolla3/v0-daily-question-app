@@ -46,7 +46,8 @@ export function Onboarding() {
                 What would you like to reflect on?
               </h2>
               <p className="text-muted-foreground mb-8">
-                Choose a category for your daily questions. You can change this anytime.
+                Choose a category for your daily questions. This will be your focus for the week, and
+                {"you'll"} get a chance to change it each Monday.
               </p>
 
               <div className="flex flex-col gap-3">
@@ -97,7 +98,7 @@ export function Onboarding() {
                 How many questions per day?
               </h2>
               <p className="text-muted-foreground mb-8">
-                Start small or go deeper. You can always adjust this later.
+                Start small or go deeper. This applies for the whole week, but you can always adjust from your profile.
               </p>
 
               <div className="flex gap-4">
