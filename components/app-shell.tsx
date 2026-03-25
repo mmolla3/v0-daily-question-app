@@ -26,7 +26,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="px-6 py-4 border-b border-border lg:px-12">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link href="/app" className="font-serif text-xl text-foreground">
-            DeepDay
+            InnerLog
           </Link>
           <nav className="hidden sm:flex items-center gap-1">
             {navItems.map((item) => {
@@ -36,8 +36,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${isActive(item.href)
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -63,8 +63,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-md text-xs transition-colors ${isActive(item.href)
-                    ? "text-primary font-medium"
-                    : "text-muted-foreground"
+                  ? "text-primary font-medium"
+                  : "text-muted-foreground"
                   }`}
               >
                 <Icon className="w-5 h-5" />
