@@ -19,13 +19,13 @@ export async function GET(request: Request) {
       if (user) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("category")
+          .select("weekly_chosen_at")
           .eq("id", user.id)
           .single()
 
-        // If they already have a category, skip onboarding
-        if (profile?.category && profile.category !== "self-reflection") {
-          return NextResponse.redirect(`${origin}/daily`)
+        // If they already have a category set (not default), skip onboarding
+        if (profile?.weekly_chosen_at) {
+          return NextResponse.redirect(`${origin}/app`)
         }
       }
 

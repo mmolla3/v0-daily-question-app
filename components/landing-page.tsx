@@ -1,10 +1,8 @@
-"use client"
-
 import React from "react"
+import Link from "next/link"
 
 import { BookOpen, Flame, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { store } from "@/lib/store"
 
 export function LandingPage() {
   return (
@@ -16,15 +14,15 @@ export function LandingPage() {
           <Button
             variant="ghost"
             className="text-muted-foreground hover:text-foreground"
-            onClick={() => store.login()}
+            asChild
           >
-            Log in
+            <Link href="/auth/login">Log in</Link>
           </Button>
           <Button
             className="bg-primary text-primary-foreground hover:bg-primary/90"
-            onClick={() => store.navigate("onboarding")}
+            asChild
           >
-            Get started
+            <Link href="/auth/sign-up">Get started</Link>
           </Button>
         </div>
       </header>
@@ -46,17 +44,17 @@ export function LandingPage() {
             <Button
               size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-base"
-              onClick={() => store.navigate("onboarding")}
+              asChild
             >
-              Start reflecting
+              <Link href="/auth/sign-up">Start reflecting</Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="border-border text-foreground hover:bg-secondary px-8 py-6 text-base bg-transparent"
-              onClick={() => store.login()}
+              asChild
             >
-              I have an account
+              <Link href="/auth/login">I have an account</Link>
             </Button>
           </div>
         </div>
