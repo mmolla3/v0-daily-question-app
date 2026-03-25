@@ -26,7 +26,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="px-6 py-4 border-b border-border lg:px-12">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link href="/app" className="font-serif text-xl text-foreground">
-            InnerLog
+            DeepDay
           </Link>
           <nav className="hidden sm:flex items-center gap-1">
             {navItems.map((item) => {

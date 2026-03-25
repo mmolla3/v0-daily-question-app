@@ -9,7 +9,7 @@ export function LandingPage() {
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 lg:px-12">
-        <h1 className="font-serif text-xl text-foreground">Innerlog</h1>
+        <h1 className="font-serif text-xl text-foreground">DeepDay</h1>
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -83,7 +83,7 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="px-6 py-6 text-center text-sm text-muted-foreground border-t border-border">
-        <p>Innerlog &mdash; Reflect. Grow. Repeat.</p>
+        <p>DeepDay &mdash; Reflect. Grow. Repeat.</p>
       </footer>
     </div>
   )
