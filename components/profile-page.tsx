@@ -66,7 +66,7 @@ export function ProfilePage() {
           {/* Category */}
           <div className="p-5">
             <div className="flex items-center justify-between mb-1">
-              <p className="font-medium text-foreground text-sm">Question Category</p>
+              <p className="font-medium text-foreground text-sm">Weekly Category</p>
               <button
                 type="button"
                 onClick={() => setShowCategoryPicker(!showCategoryPicker)}
@@ -78,6 +78,7 @@ export function ProfilePage() {
             {!showCategoryPicker && (
               <p className="text-sm text-muted-foreground">
                 {categoryLabels[profile.category]}
+                <span className="text-xs ml-1 opacity-70">(changes apply immediately)</span>
               </p>
             )}
             {showCategoryPicker && (
@@ -108,7 +109,8 @@ export function ProfilePage() {
 
           {/* Questions per day */}
           <div className="p-5">
-            <p className="font-medium text-foreground text-sm mb-2">Questions Per Day</p>
+            <p className="font-medium text-foreground text-sm mb-1">Questions Per Day</p>
+            <p className="text-xs text-muted-foreground mb-2">Chosen weekly, but you can adjust anytime</p>
             <div className="flex gap-2">
               {[1, 2, 3].map((count) => (
                 <button

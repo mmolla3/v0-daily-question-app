@@ -2,7 +2,13 @@
 
 import { useSyncExternalStore } from "react"
 import type { Category, DailyEntry, Mood, UserProfile } from "./mock-data"
-import { defaultProfile, getQuestionsForToday, mockEntries } from "./mock-data"
+import {
+  defaultProfile,
+  getQuestionsForToday,
+  mockEntries,
+  getCurrentWeekMonday,
+  isNewWeek,
+} from "./mock-data"
 
 interface AppState {
   currentView: "landing" | "onboarding" | "daily" | "archive" | "trends" | "profile"
@@ -10,6 +16,7 @@ interface AppState {
   entries: DailyEntry[]
   todayEntry: DailyEntry | null
   isOnboarded: boolean
+  needsWeeklySetup: boolean
 }
 
 let state: AppState = {
@@ -18,6 +25,7 @@ let state: AppState = {
   entries: [...mockEntries],
   todayEntry: null,
   isOnboarded: false,
+  needsWeeklySetup: false,
 }
 
 const listeners = new Set<() => void>()
@@ -41,11 +49,14 @@ export const store = {
     emitChange()
   },
   login() {
+    const profile = { ...defaultProfile }
+    const weeklySetupNeeded = isNewWeek(profile.weeklyChosenAt)
     state = {
       ...state,
-      profile: { ...defaultProfile },
+      profile,
       entries: [...mockEntries],
       isOnboarded: true,
+      needsWeeklySetup: weeklySetupNeeded,
       currentView: "daily",
     }
     emitChange()
@@ -57,8 +68,10 @@ export const store = {
         ...defaultProfile,
         category,
         questionsPerDay,
+        weeklyChosenAt: getCurrentWeekMonday(),
       },
       isOnboarded: true,
+      needsWeeklySetup: false,
       currentView: "daily",
     }
     emitChange()
@@ -67,7 +80,8 @@ export const store = {
     if (!state.profile) return
     state = {
       ...state,
-      profile: { ...state.profile, category },
+      profile: { ...state.profile, category, weeklyChosenAt: getCurrentWeekMonday() },
+      needsWeeklySetup: false,
     }
     emitChange()
   },
@@ -75,7 +89,36 @@ export const store = {
     if (!state.profile) return
     state = {
       ...state,
-      profile: { ...state.profile, questionsPerDay: count },
+      profile: { ...state.profile, questionsPerDay: count, weeklyChosenAt: getCurrentWeekMonday() },
+      needsWeeklySetup: false,
+    }
+    emitChange()
+  },
+  /** Confirm weekly settings (keep current or update category + count) */
+  confirmWeeklySettings(category: Category, questionsPerDay: number) {
+    if (!state.profile) return
+    state = {
+      ...state,
+      profile: {
+        ...state.profile,
+        category,
+        questionsPerDay,
+        weeklyChosenAt: getCurrentWeekMonday(),
+      },
+      needsWeeklySetup: false,
+    }
+    emitChange()
+  },
+  /** Skip the weekly setup and keep current settings */
+  skipWeeklySetup() {
+    if (!state.profile) return
+    state = {
+      ...state,
+      profile: {
+        ...state.profile,
+        weeklyChosenAt: getCurrentWeekMonday(),
+      },
+      needsWeeklySetup: false,
     }
     emitChange()
   },

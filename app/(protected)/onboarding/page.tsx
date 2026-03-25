@@ -1,56 +1,77 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, ArrowRight, Check } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Feather, Check, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { store } from "@/lib/store"
-import type { Category } from "@/lib/mock-data"
-import { categoryLabels, categoryDescriptions } from "@/lib/mock-data"
+import { updateProfile } from "@/lib/supabase/actions"
+import {
+  type Category,
+  categoryLabels,
+  categoryDescriptions,
+  getCurrentWeekMonday,
+} from "@/lib/types"
 
-const categories: Category[] = ["self-reflection", "mental-health", "career", "emotional-awareness", "mix"]
+const categories: Category[] = [
+  "self-reflection",
+  "mental-health",
+  "career",
+  "emotional-awareness",
+  "mix",
+]
 
-export function Onboarding() {
+export default function OnboardingPage() {
+  const router = useRouter()
   const [step, setStep] = useState(1)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [questionsPerDay, setQuestionsPerDay] = useState(2)
+  const [saving, setSaving] = useState(false)
 
-  function handleComplete() {
+  const handleComplete = async () => {
     if (!selectedCategory) return
-    store.completeOnboarding(selectedCategory, questionsPerDay)
+    setSaving(true)
+    
+    try {
+      await updateProfile({
+        category: selectedCategory,
+        questions_per_day: questionsPerDay,
+        weekly_chosen_at: getCurrentWeekMonday(),
+      })
+      router.push("/app")
+    } catch (error) {
+      console.error("Failed to save preferences:", error)
+      setSaving(false)
+    }
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="flex items-center justify-between px-6 py-4 lg:px-12">
-        <h1 className="font-serif text-xl text-foreground">Innerlog</h1>
-        <Button
-          variant="ghost"
-          className="text-muted-foreground"
-          onClick={() => store.navigate("landing")}
-        >
-          Back
-        </Button>
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center gap-2">
+          <Feather className="w-5 h-5 text-primary" />
+          <span className="font-serif text-lg text-foreground">Innerlog</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span className={step === 1 ? "text-primary font-medium" : ""}>Category</span>
+          <ChevronRight className="w-4 h-4" />
+          <span className={step === 2 ? "text-primary font-medium" : ""}>Questions</span>
+        </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-6">
+      {/* Content */}
+      <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-lg">
-          {/* Progress */}
-          <div className="flex items-center gap-2 mb-8">
-            <div className={`h-1 flex-1 rounded-full ${step >= 1 ? "bg-primary" : "bg-border"}`} />
-            <div className={`h-1 flex-1 rounded-full ${step >= 2 ? "bg-primary" : "bg-border"}`} />
-          </div>
-
-          {step === 1 && (
+          {step === 1 ? (
             <div>
               <h2 className="font-serif text-3xl text-foreground mb-2">
-                What would you like to reflect on?
+                {"What would you like to reflect on?"}
               </h2>
               <p className="text-muted-foreground mb-8">
-                Choose a category for your daily questions. This will be your focus for the week, and
-                {"you'll"} get a chance to change it each Monday.
+                {"Choose a category for your daily questions. This will be your focus for the week, and you'll get a chance to change it each Monday."}
               </p>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 mb-8">
                 {categories.map((cat) => (
                   <button
                     key={cat}
@@ -71,7 +92,7 @@ export function Onboarding() {
                       </div>
                       {selectedCategory === cat && (
                         <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 ml-3">
-                          <Check className="w-3.5 h-3.5 text-primary-foreground" />
+                          <Check className="w-4 h-4 text-primary-foreground" />
                         </div>
                       )}
                     </div>
@@ -79,20 +100,16 @@ export function Onboarding() {
                 ))}
               </div>
 
-              <div className="flex justify-end mt-8">
-                <Button
-                  onClick={() => setStep(2)}
-                  disabled={!selectedCategory}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  Continue
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
+              <Button
+                size="lg"
+                disabled={!selectedCategory}
+                onClick={() => setStep(2)}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-6"
+              >
+                Continue
+              </Button>
             </div>
-          )}
-
-          {step === 2 && (
+          ) : (
             <div>
               <h2 className="font-serif text-3xl text-foreground mb-2">
                 How many questions per day?
@@ -101,7 +118,7 @@ export function Onboarding() {
                 Start small or go deeper. This applies for the whole week, but you can always adjust from your profile.
               </p>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 mb-8">
                 {[1, 2, 3].map((count) => (
                   <button
                     key={count}
@@ -121,20 +138,22 @@ export function Onboarding() {
                 ))}
               </div>
 
-              <div className="flex justify-between mt-8">
+              <div className="flex gap-3">
                 <Button
-                  variant="ghost"
+                  size="lg"
+                  variant="outline"
                   onClick={() => setStep(1)}
-                  className="text-muted-foreground"
+                  className="flex-1 py-6 bg-transparent"
                 >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
                 <Button
+                  size="lg"
                   onClick={handleComplete}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  disabled={saving}
+                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 py-6"
                 >
-                  Start reflecting
+                  {saving ? "Saving..." : "Start reflecting"}
                 </Button>
               </div>
             </div>

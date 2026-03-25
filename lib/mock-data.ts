@@ -12,6 +12,7 @@ export interface UserProfile {
   longestStreak: number
   totalAnswered: number
   joinedAt: string
+  weeklyChosenAt: string // ISO date string of the Monday the settings were chosen for
 }
 
 export interface DailyEntry {
@@ -84,10 +85,28 @@ const questionPool: Record<Category, string[]> = {
   ],
 }
 
+/** Get the Monday of the current ISO week */
+export function getCurrentWeekMonday(): string {
+  const today = new Date()
+  const day = today.getDay() // 0=Sun, 1=Mon...
+  const diff = day === 0 ? -6 : 1 - day // shift to Monday
+  const monday = new Date(today)
+  monday.setDate(today.getDate() + diff)
+  return monday.toISOString().split("T")[0]
+}
+
+/** Check if user needs to reconfigure weekly settings */
+export function isNewWeek(weeklyChosenAt: string | undefined): boolean {
+  if (!weeklyChosenAt) return true
+  return getCurrentWeekMonday() !== weeklyChosenAt
+}
+
 export function getQuestionsForToday(category: Category, count: number): string[] {
   const pool = questionPool[category]
-  const today = new Date()
-  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
+  // Use a weekly seed so the same questions appear all week
+  const monday = getCurrentWeekMonday()
+  const parts = monday.split("-")
+  const seed = Number(parts[0]) * 10000 + Number(parts[1]) * 100 + Number(parts[2])
   const shuffled = [...pool].sort((a, b) => {
     const hashA = (seed * a.length) % 100
     const hashB = (seed * b.length) % 100
@@ -174,4 +193,5 @@ export const defaultProfile: UserProfile = {
   longestStreak: 14,
   totalAnswered: 42,
   joinedAt: "2026-01-15",
+  weeklyChosenAt: getCurrentWeekMonday(),
 }

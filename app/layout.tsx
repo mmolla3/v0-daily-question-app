@@ -16,7 +16,7 @@ const dmSerif = DM_Serif_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'Innerlog - Daily Reflection',
+  title: 'DeepDay - Daily Reflection',
   description: 'One question a day to understand yourself better. Build self-awareness through guided daily reflection.',
 }
 
